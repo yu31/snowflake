@@ -10,7 +10,7 @@ func TestGenerateId(t *testing.T) {
 	var err error
 	var id int64
 
-	idWorker, err := snowflake.NewSnowFlake(0)
+	idWorker, err := snowflake.New(0)
 	if err != nil {
 		t.Errorf("New snowflake fail: %v", err)
 		return
@@ -43,7 +43,7 @@ func BenchmarkSnowFlake_NextId(b *testing.B) {
 	var err error
 	var id int64
 
-	idWorker, err := snowflake.NewSnowFlake(0)
+	idWorker, err := snowflake.New(0)
 	if err != nil {
 		b.Errorf("New snowflake fail: %v", err)
 		return

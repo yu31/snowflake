@@ -39,8 +39,8 @@ type SnowFlake struct {
 	lastSequenceID int64
 }
 
-// NewSnowFlake return a new SnowFlake
-func NewSnowFlake(instanceID int64) (*SnowFlake, error) {
+// New return a new SnowFlake
+func New(instanceID int64) (*SnowFlake, error) {
 	if instanceID < 0 {
 		return nil, errors.New("the specified instanceId can't less than 0")
 	}
