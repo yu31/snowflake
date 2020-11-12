@@ -2,7 +2,7 @@
 
 # Get Started
 
-```
+```go
 package main
 
 import (
@@ -13,8 +13,8 @@ import (
 
 func main() {
     // create a new worker
-    instanceID := 1
-    idWorker, err := snowflake.NewSnowFlake(instanceID)
+    instanceID := int64(1)
+    idWorker, err := snowflake.New(instanceID)
     if err != nil {
         fmt.Printf("New snowflake fail: %v\n", err)
         return

@@ -40,19 +40,17 @@ func TestGenerateId(t *testing.T) {
 }
 
 func BenchmarkSnowFlake_NextId(b *testing.B) {
-	var err error
-	var id int64
-
 	idWorker, err := snowflake.New(0)
 	if err != nil {
 		b.Errorf("New snowflake fail: %v", err)
 		return
 	}
 
-	for i := 0; i < b.N; i++ {
-		id, err = idWorker.NextID()
-	}
-
-	_ = id
-	_ = err
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			id, err := idWorker.NextID()
+			_ = id
+			_ = err
+		}
+	})
 }

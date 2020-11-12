@@ -42,10 +42,10 @@ type SnowFlake struct {
 // New return a new SnowFlake
 func New(instanceID int64) (*SnowFlake, error) {
 	if instanceID < 0 {
-		return nil, errors.New("the specified instanceId can't less than 0")
+		return nil, errors.New("instanceID can't less than 0")
 	}
 	if instanceID > maxInstanceID {
-		return nil, fmt.Errorf("the specified instanceId can't more than %d", maxInstanceID)
+		return nil, fmt.Errorf("instanceID can't more than %d", maxInstanceID)
 	}
 
 	sf := &SnowFlake{
