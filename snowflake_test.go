@@ -69,7 +69,7 @@ func TestSnowflake_Batch(t *testing.T) {
 		t.Fatalf("unexpected number of result %d", len(ids))
 	}
 
-	for i := 0; i < len(ids) - 1; i++ {
+	for i := 0; i < len(ids)-1; i++ {
 		if ids[i] >= ids[i+1] {
 			t.Fatalf("invalid id <%d> and <%d>", ids[i], ids[i+1])
 		}

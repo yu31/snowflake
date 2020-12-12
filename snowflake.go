@@ -124,7 +124,7 @@ func (sf *Snowflake) millTimestamp() int64 {
 
 // Decompose decompose id to timestamp instance id and sequence id
 func Decompose(id int64) (timestamp int64, instanceID int64, sequenceID int64) {
-	timestamp = id >> timestampShift + originTime
+	timestamp = id>>timestampShift + originTime
 	instanceID = id >> instanceShift & maxInstanceID
 	sequenceID = id & maxSequenceID
 	return

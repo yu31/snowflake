@@ -1,3 +1,3 @@
-module github.com/Yu-33/snowflake
+module github.com/yu31/snowflake
 
 go 1.12

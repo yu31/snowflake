@@ -14,7 +14,7 @@ A snowflake ID is composed of
 ## Installation
 
 ```bash
-$ go get -u github.com/Yu-33/snowflake
+$ go get -u github.com/yu31/snowflake
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ package man
 import (
 	"fmt"
 	
-	"github.com/Yu-33/snowflake"
+	"github.com/yu31/snowflake"
 )
 
 func main() {
