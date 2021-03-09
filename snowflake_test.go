@@ -13,14 +13,14 @@ func TestNew(t *testing.T) {
 	if worker == nil {
 		t.Fatal("worker is nil")
 	}
-	if worker.instanceID != 123 {
-		t.Fatalf("mistake field worker.instanceID %d", worker.instanceID)
+	if worker.instanceId != 123 {
+		t.Fatalf("mistake field worker.instanceID %d", worker.instanceId)
 	}
 	if worker.lastTimestamp != 0 {
 		t.Fatalf("mistake field worker.lastTimestamp %d", worker.lastTimestamp)
 	}
-	if worker.lastSequenceID != 0 {
-		t.Fatalf("mistake field worker.lastSequenceID %d", worker.lastSequenceID)
+	if worker.lastSequenceId != 0 {
+		t.Fatalf("mistake field worker.lastSequenceID %d", worker.lastSequenceId)
 	}
 	if worker.mux == nil {
 		t.Fatalf("worker.mux not initialization")

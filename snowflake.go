@@ -22,14 +22,14 @@ const (
 	instanceBits  uint = 10
 	timestampBits uint = 41
 
-	maxSequenceID = -1 ^ (-1 << sequenceBits)
-	maxInstanceID = -1 ^ (-1 << instanceBits)
+	maxSequenceId = -1 ^ (-1 << sequenceBits)
+	maxInstanceId = -1 ^ (-1 << instanceBits)
 	maxTimestamp  = -1 ^ (-1 << timestampBits)
 
 	instanceShift  = sequenceBits
 	timestampShift = instanceShift + instanceBits
 
-	maxNextIdsNum = 128
+	maxNextIdsNum = 1024
 )
 
 const (
@@ -39,25 +39,25 @@ const (
 // Snowflake for implements algorithm of snowflake
 type Snowflake struct {
 	mux            *sync.Mutex
-	instanceID     int64
+	instanceId     int64
 	lastTimestamp  int64
-	lastSequenceID int64
+	lastSequenceId int64
 }
 
 // New return a new SnowFlake
-func New(instanceID int64) (*Snowflake, error) {
-	if instanceID < 0 {
+func New(instanceId int64) (*Snowflake, error) {
+	if instanceId < 0 {
 		return nil, errors.New("instanceID can't less than 0")
 	}
-	if instanceID > maxInstanceID {
-		return nil, fmt.Errorf("instanceID can't more than %d", maxInstanceID)
+	if instanceId > maxInstanceId {
+		return nil, fmt.Errorf("instanceId can't more than %d", maxInstanceId)
 	}
 
 	sf := &Snowflake{
 		mux:            new(sync.Mutex),
-		instanceID:     instanceID,
+		instanceId:     instanceId,
 		lastTimestamp:  0,
-		lastSequenceID: 0,
+		lastSequenceId: 0,
 	}
 	return sf, nil
 }
@@ -68,32 +68,36 @@ func (sf *Snowflake) Batch(num int) ([]int64, error) {
 		num = maxNextIdsNum
 	}
 
-	var err error
-
 	sf.mux.Lock()
-	defer sf.mux.Unlock()
 
+	var err error
 	ids := make([]int64, num)
 	for i := 0; i < num; i++ {
 		ids[i], err = sf.next()
 		if err != nil {
-			return nil, err
+			break
 		}
 	}
 
+	sf.mux.Unlock()
+
+	if err != nil {
+		return nil, err
+	}
 	return ids, nil
 }
 
 // Next return a unique id with thread safe
 func (sf *Snowflake) Next() (int64, error) {
 	sf.mux.Lock()
-	defer sf.mux.Unlock()
-	return sf.next()
+	id, err := sf.next()
+	sf.mux.Unlock()
+	return id, err
 }
 
 // generate a unique id
 func (sf *Snowflake) next() (int64, error) {
-	var uniqueID int64
+	var uniqueId int64
 	var timestamp int64
 
 	timestamp = sf.millTimestamp()
@@ -101,7 +105,7 @@ func (sf *Snowflake) next() (int64, error) {
 		return 0, errors.New("clock moved backwards")
 	}
 
-	for sf.lastSequenceID > maxSequenceID && sf.lastTimestamp == timestamp {
+	for sf.lastSequenceId > maxSequenceId && sf.lastTimestamp == timestamp {
 		time.Sleep(time.Millisecond)
 		timestamp = sf.millTimestamp()
 	}
@@ -111,15 +115,15 @@ func (sf *Snowflake) next() (int64, error) {
 	}
 
 	if sf.lastTimestamp == timestamp {
-		sf.lastSequenceID++
+		sf.lastSequenceId++
 	} else {
-		sf.lastSequenceID = 0
+		sf.lastSequenceId = 0
 	}
 
 	sf.lastTimestamp = timestamp
 
-	uniqueID = ((timestamp - originTime) << timestampShift) | (sf.instanceID << instanceShift) | sf.lastSequenceID
-	return uniqueID, nil
+	uniqueId = ((timestamp - originTime) << timestampShift) | (sf.instanceId << instanceShift) | sf.lastSequenceId
+	return uniqueId, nil
 }
 
 // millTimestamp generate a unix millisecond
@@ -130,7 +134,7 @@ func (sf *Snowflake) millTimestamp() int64 {
 // Decompose decompose id to timestamp instance id and sequence id
 func Decompose(id int64) (timestamp int64, instanceID int64, sequenceID int64) {
 	timestamp = id>>timestampShift + originTime
-	instanceID = id >> instanceShift & maxInstanceID
-	sequenceID = id & maxSequenceID
+	instanceID = id >> instanceShift & maxInstanceId
+	sequenceID = id & maxSequenceId
 	return
 }
