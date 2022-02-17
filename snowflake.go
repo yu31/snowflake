@@ -47,10 +47,10 @@ type Snowflake struct {
 // New return a new SnowFlake
 func New(instanceId int64) (*Snowflake, error) {
 	if instanceId < 0 {
-		return nil, errors.New("instanceID can't less than 0")
+		return nil, errors.New("snowflake: instanceID can't less than 0")
 	}
 	if instanceId > maxInstanceId {
-		return nil, fmt.Errorf("instanceId can't more than %d", maxInstanceId)
+		return nil, fmt.Errorf("snowflake: instanceId can't more than %d", maxInstanceId)
 	}
 
 	sf := &Snowflake{
@@ -102,7 +102,7 @@ func (sf *Snowflake) next() (int64, error) {
 
 	timestamp = sf.millTimestamp()
 	if timestamp < sf.lastTimestamp {
-		return 0, errors.New("clock moved backwards")
+		return 0, errors.New("snowflake; clock moved backwards")
 	}
 
 	for sf.lastSequenceId > maxSequenceId && sf.lastTimestamp == timestamp {
@@ -111,7 +111,7 @@ func (sf *Snowflake) next() (int64, error) {
 	}
 
 	if (timestamp - originTime) >= maxTimestamp {
-		return 0, errors.New("over the time limit")
+		return 0, errors.New("snowflake: over the time limit")
 	}
 
 	if sf.lastTimestamp == timestamp {
