@@ -95,6 +95,11 @@ func (sf *Snowflake) Next() (int64, error) {
 	return id, err
 }
 
+// NextUnsafe return a unique id without thread safe
+func (sf *Snowflake) NextUnsafe() (int64, error) {
+	return sf.next()
+}
+
 // generate a unique id
 func (sf *Snowflake) next() (int64, error) {
 	var uniqueId int64
